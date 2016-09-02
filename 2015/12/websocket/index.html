@@ -1,0 +1,764 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java,websocket," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Beta" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="浏览器限制经过测试，每个浏览器能支持的最大连接数是不同的
+
+所有连接，连接到同一个域名
+
+
+chrome（46）整个浏览器最多支持256个连接，再新建连接会失败‘ERR_INSUFFICIENT_RESOURCES’
+ie11 每个tab最多支持6个连接
+
+心跳websocket规范定义了心跳机制，一方可以通过发送ping（opcode 0x9）消息给另一方，另一方收到ping后应该尽可能快的返回">
+<meta property="og:type" content="article">
+<meta property="og:title" content="websocket ,ping pong heardbeat心跳机制">
+<meta property="og:url" content="http://blog.techbeta.me/2015/12/websocket/index.html">
+<meta property="og:site_name" content="Beta">
+<meta property="og:description" content="浏览器限制经过测试，每个浏览器能支持的最大连接数是不同的
+
+所有连接，连接到同一个域名
+
+
+chrome（46）整个浏览器最多支持256个连接，再新建连接会失败‘ERR_INSUFFICIENT_RESOURCES’
+ie11 每个tab最多支持6个连接
+
+心跳websocket规范定义了心跳机制，一方可以通过发送ping（opcode 0x9）消息给另一方，另一方收到ping后应该尽可能快的返回">
+<meta property="og:image" content="http://7xidwd.com1.z0.glb.clouddn.com/img_websocket-heartbeat-ie11.png">
+<meta property="og:image" content="http://7xidwd.com1.z0.glb.clouddn.com/img_websocet-heartbeat-chrome46.png">
+<meta property="og:updated_time" content="2016-09-02T08:59:48.247Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="websocket ,ping pong heardbeat心跳机制">
+<meta name="twitter:description" content="浏览器限制经过测试，每个浏览器能支持的最大连接数是不同的
+
+所有连接，连接到同一个域名
+
+
+chrome（46）整个浏览器最多支持256个连接，再新建连接会失败‘ERR_INSUFFICIENT_RESOURCES’
+ie11 每个tab最多支持6个连接
+
+心跳websocket规范定义了心跳机制，一方可以通过发送ping（opcode 0x9）消息给另一方，另一方收到ping后应该尽可能快的返回">
+<meta name="twitter:image" content="http://7xidwd.com1.z0.glb.clouddn.com/img_websocket-heartbeat-ie11.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.techbeta.me/2015/12/websocket/"/>
+
+  <title> websocket ,ping pong heardbeat心跳机制 | Beta </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-71359179-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=38070993";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Beta</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">打杂</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                websocket ,ping pong heardbeat心跳机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-07T19:56:23+08:00" content="2015-12-07">
+              2015-12-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/protocol/" itemprop="url" rel="index">
+                    <span itemprop="name">protocol</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/websocket/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/websocket/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="浏览器限制"><a href="#浏览器限制" class="headerlink" title="浏览器限制"></a>浏览器限制</h2><p>经过测试，每个浏览器能支持的最大连接数是不同的</p>
+<ol>
+<li>所有连接，连接到同一个域名</li>
+</ol>
+<ul>
+<li>chrome（46）整个浏览器最多支持256个连接，再新建连接会失败‘ERR_INSUFFICIENT_RESOURCES’</li>
+<li>ie11 每个tab最多支持6个连接</li>
+</ul>
+<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><p>websocket规范定义了心跳机制，一方可以通过发送ping（opcode 0x9）消息给另一方，另一方收到ping后应该尽可能快的返回pong（0xA）。<br><a id="more"></a></p>
+<h3 id="服务端心跳，以java为例"><a href="#服务端心跳，以java为例" class="headerlink" title="服务端心跳，以java为例"></a>服务端心跳，以java为例</h3><p>目前的话，浏览器中没有相关api发送ping给服务器，只能由服务器发ping给浏览器</p>
+<p>下面是java中的写法,本文采用的是注解方式的websocket写法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ServerEndpoint</span>(<span class="string">"/websocket"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EchoAnnotation</span> </span>&#123;</div><div class="line">	<span class="comment">// some code</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li><p>服务发送ping</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">byte</span>[] bs = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1</span>];</div><div class="line">bs[<span class="number">0</span>]=<span class="string">'i'</span>;</div><div class="line">ByteBuffer bb = ByteBuffer.wrap(bs );</div><div class="line">session.getBasicRemote().sendPing(bb);</div></pre></td></tr></table></figure>
+</li>
+<li><p>浏览器会自动返回pong消息，并且会主动触发服务器的<code>onPong</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@OnMessage</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">echoPongMessage</span><span class="params">(Session session,PongMessage pm)</span> </span>&#123;</div><div class="line">       System.out.println(<span class="string">"收到浏览器的pong "</span> + pm.getApplicationData());</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="浏览器心跳"><a href="#浏览器心跳" class="headerlink" title="浏览器心跳"></a>浏览器心跳</h3><p>虽然浏览器环境中的js没有websocket ping pong的api，但是通过监听网络的情况下，我发现浏览器是自带了心跳机制的，我对chrome46 和 ie11进行了测试，发现心跳是不同的，说明<strong>浏览器心跳并不是标准规范</strong>，而是浏览器厂商自己设计的</p>
+<ol>
+<li><p>ie11<br>ie11 的心跳机制是<strong>标准的pong消息</strong>，能够被服务端的<code>onPong</code>监听函数捕获，<strong>心跳间隔是30秒</strong><br><img src="http://7xidwd.com1.z0.glb.clouddn.com/img_websocket-heartbeat-ie11.png" alt="websocket-heartbeat-ie11"></p>
+</li>
+<li><p>chrome46<br>chrome46 的心跳是tcp心跳，<strong>心跳间隔是45秒</strong><br><img src="http://7xidwd.com1.z0.glb.clouddn.com/img_websocet-heartbeat-chrome46.png" alt="websocet-heartbeat-chrome46"></p>
+</li>
+</ol>
+<hr>
+<p><strong>参考文档</strong></p>
+<blockquote>
+<p><a href="https://tools.ietf.org/html/rfc6455#section-5.5.2" target="_blank" rel="external">https://tools.ietf.org/html/rfc6455#section-5.5.2</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag">#java</a>
+          
+            <a href="/tags/websocket/" rel="tag">#websocket</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/spring-websocket/" rel="next" title="spring-websocket">
+                <i class="fa fa-chevron-left"></i> spring-websocket
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/wireshark-Loopback/" rel="prev" title="wireshark监听本地localhost/127.0.0.1回环网络">
+                wireshark监听本地localhost/127.0.0.1回环网络 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/websocket/"
+           data-title="websocket ,ping pong heardbeat心跳机制" data-url="http://blog.techbeta.me/2015/12/websocket/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/img_yangtuo.jpg"
+               alt="Meng" />
+          <p class="site-author-name" itemprop="name">Meng</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">58</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器限制"><span class="nav-number">1.</span> <span class="nav-text">浏览器限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#心跳"><span class="nav-number">2.</span> <span class="nav-text">心跳</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端心跳，以java为例"><span class="nav-number">2.1.</span> <span class="nav-text">服务端心跳，以java为例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览器心跳"><span class="nav-number">2.2.</span> <span class="nav-text">浏览器心跳</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Meng</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"momotime"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+<script type="text/javascript" async src="//push.zhanzhang.baidu.com/push.js">
+</script>
+
+
+</body>
+</html>

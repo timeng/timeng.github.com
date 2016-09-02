@@ -1,0 +1,11 @@
+User-agent: Baiduspider
+Disallow: /about
+
+User-agent: Googlebot
+Disallow: /about
+
+
+User-agent: *
+Disallow: /about
+
+Sitemap: http://blog.techbeta.me/sitemap.xml

@@ -1,0 +1,775 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Beta" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这几天听同事说到Smarty这个php模版框架，好像很厉害的样子。花点时间了解和实践，记录一下 ,本文全部参考官网文档
+1.安装&amp;amp;配置1.1 安装smarty官网下载，找到适合你php版本的smarty，smarty3需要php5.2+支持
+将下载的安装包解压到任意位置，目录结构如下：123456789smarty-3.1.27   demo      configs      plug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Smarty模版引擎上手">
+<meta property="og:url" content="http://blog.techbeta.me/2015/12/php-smarty/index.html">
+<meta property="og:site_name" content="Beta">
+<meta property="og:description" content="这几天听同事说到Smarty这个php模版框架，好像很厉害的样子。花点时间了解和实践，记录一下 ,本文全部参考官网文档
+1.安装&amp;amp;配置1.1 安装smarty官网下载，找到适合你php版本的smarty，smarty3需要php5.2+支持
+将下载的安装包解压到任意位置，目录结构如下：123456789smarty-3.1.27   demo      configs      plug">
+<meta property="og:updated_time" content="2016-09-02T08:59:48.163Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Smarty模版引擎上手">
+<meta name="twitter:description" content="这几天听同事说到Smarty这个php模版框架，好像很厉害的样子。花点时间了解和实践，记录一下 ,本文全部参考官网文档
+1.安装&amp;amp;配置1.1 安装smarty官网下载，找到适合你php版本的smarty，smarty3需要php5.2+支持
+将下载的安装包解压到任意位置，目录结构如下：123456789smarty-3.1.27   demo      configs      plug">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.techbeta.me/2015/12/php-smarty/"/>
+
+  <title> Smarty模版引擎上手 | Beta </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-71359179-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=38070993";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Beta</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">打杂</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Smarty模版引擎上手
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-01T12:05:12+08:00" content="2015-12-01">
+              2015-12-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/php/" itemprop="url" rel="index">
+                    <span itemprop="name">php</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/php-smarty/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/php-smarty/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p> 这几天听同事说到Smarty这个php模版框架，好像很厉害的样子。花点时间了解和实践，记录一下 ,本文全部<a href="http://www.smarty.net/documentation" target="_blank">参考官网文档</a></p>
+<h2 id="1-安装-amp-配置"><a href="#1-安装-amp-配置" class="headerlink" title="1.安装&amp;配置"></a>1.安装&amp;配置</h2><h3 id="1-1-安装"><a href="#1-1-安装" class="headerlink" title="1.1 安装"></a>1.1 安装</h3><p><a href="http://www.smarty.net/download " target="_blank">smarty官网下载</a>，找到适合你php版本的smarty，smarty3需要php5.2+支持</p>
+<p>将下载的安装包解压到任意位置，目录结构如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">smarty-3.1.27</div><div class="line">   demo</div><div class="line">      configs</div><div class="line">      plugins</div><div class="line">      templates</div><div class="line">   lexer</div><div class="line">   libs</div><div class="line">      plugins</div><div class="line">      sysplugins</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>libs目录是Smarty的库文件目录，可以放在任意位置，比如<code>/usr/local/lib/Smarty/libs</code></p>
+<p>demo是示例</p>
+<h3 id="1-2-加载Smarty库"><a href="#1-2-加载Smarty库" class="headerlink" title="1.2. 加载Smarty库"></a>1.2. 加载Smarty库</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"><span class="keyword">require_once</span>(<span class="string">'Smarty.class.php'</span>);</div><div class="line"></div><div class="line">$smarty = <span class="keyword">new</span> Smarty();</div><div class="line"><span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<ol>
+<li><p>如果找不到Smarty.class.php的话，你需要在php.ini中，把smarty的库路径添加到include路径中，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">include_path = &quot;.:/usr/share/php:/usr/local/lib/Smarty/libs/&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>或者在加载Smarty之前，设置 SMARTY_DIR变量，然后再加载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">define(&apos;SMARTY_DIR&apos;, &apos;C:/ide/smarty/libs/&apos;);</div><div class="line">require_once(SMARTY_DIR . &apos;Smarty.class.php&apos;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>或者通过绝对路径加载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">require_once(&apos;/usr/local/lib/Smarty-v.e.r/libs/Smarty.class.php&apos;);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="1-3-设置模版相关的目录"><a href="#1-3-设置模版相关的目录" class="headerlink" title="1.3. 设置模版相关的目录"></a>1.3. 设置模版相关的目录</h3><p>上面已经加载并且创建了smarty，还需要设置页面模版相关的一些路径</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$smarty-&gt;setTemplateDir(<span class="string">'/web/root/example/templates/'</span>);</div><div class="line">$smarty-&gt;setCompileDir(<span class="string">'/web/root/example/templates_c/'</span>);</div><div class="line">$smarty-&gt;setConfigDir(<span class="string">'/web/root/example/configs/'</span>);</div><div class="line">$smarty-&gt;setCacheDir(<span class="string">'/web/root/example/cache/'</span>);</div></pre></td></tr></table></figure>
+<p>templates 是页面模版存放的路径</p>
+<p>templates_c 模板编译文件的路径，Smarty将进入templates_c/目录来执行已编译的PHP文件。 该目录必须可写入</p>
+<p>configs 配置文件的路径</p>
+<p>cache 模板缓存文件的路径，Smarty将进入cache/目录查找缓存文件并把缓存文件当作PHP来执行。 该目录必须可写入</p>
+<blockquote>
+<p>设置可写权限<code>chmod 770</code>，当前用户和用户组有权限</p>
+</blockquote>
+<h2 id="2-模版使用"><a href="#2-模版使用" class="headerlink" title="2. 模版使用"></a>2. 模版使用</h2><p>Smarty 默认使用的是utf8编码，如果需要特殊指定编码,在php代码中设置环境变量<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">define(<span class="string">'SMARTY_RESOURCE_CHAR_SET'</span>, <span class="string">'EUC-JP'</span>);</div></pre></td></tr></table></figure></p>
+<h3 id="2-1-注释"><a href="#2-1-注释" class="headerlink" title="2.1 注释"></a>2.1 注释</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;* 这里是注释，不会输出到浏览器 *&#125;</div></pre></td></tr></table></figure>
+<p>注释模版，literal可以让模版不解析，原样输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;literal&#125;</div><div class="line">        &#123;section name=customer loop=$custid&#125;</div><div class="line">        &lt;p&gt;</div><div class="line">            id: &#123;$custid[customer]&#125;&lt;br/&gt;</div><div class="line">            name: &#123;$name[customer]&#125;&lt;br/&gt;</div><div class="line">            address: &#123;$address[customer]&#125;</div><div class="line">        &lt;/p&gt;</div><div class="line">        &#123;/section&#125;</div><div class="line">&#123;/literal&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="2-2-变量"><a href="#2-2-变量" class="headerlink" title="2.2 变量"></a>2.2 变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;$foo&#125;        &lt;-- 显示简单的变量 (非数组/对象)</div><div class="line">&#123;$foo[4]&#125;     &lt;-- 在0开始索引的数组中显示第五个元素</div><div class="line">&#123;$foo.bar&#125;    &lt;-- 显示&quot;bar&quot;下标指向的数组值，等同于PHP的$foo[&apos;bar&apos;]</div><div class="line">&#123;$foo.$bar&#125;   &lt;-- 显示以变量$bar值作为下标指向的数组值，等同于PHP的$foo[$bar]</div><div class="line">&#123;$foo-&gt;bar&#125;   &lt;-- 显示对象属性 &quot;bar&quot;</div><div class="line">&#123;$foo-&gt;bar()&#125; &lt;-- 显示对象成员方法&quot;bar&quot;的返回</div><div class="line">&#123;#foo#&#125;       &lt;-- 显示变量配置文件内的变量&quot;foo&quot;</div><div class="line">&#123;$smarty.config.foo&#125; &lt;-- 等同于&#123;#foo#&#125;</div><div class="line">&#123;$foo[bar]&#125;   &lt;-- 仅在循环的语法内可用，见&#123;section&#125;</div><div class="line">&#123;assign var=foo value=&apos;baa&apos;&#125;&#123;$foo&#125; &lt;--  显示&quot;baa&quot;, 见&#123;assign&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-3-配置文件中的变量"><a href="#2-3-配置文件中的变量" class="headerlink" title="2.3 配置文件中的变量"></a>2.3 配置文件中的变量</h3><p>1.3 章节中介绍过设置配置文件的目录<code>setConfigDir</code>，这里面放的配置文件是key-value形式的</p>
+<p>比如,一个test.conf文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">author=&apos;abc&apos;</div></pre></td></tr></table></figure></p>
+<p>模块中这样使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#author#</div></pre></td></tr></table></figure></p>
+<h2 id="3-函数"><a href="#3-函数" class="headerlink" title="3 函数"></a>3 函数</h2><p>常用函数和指令</p>
+<h3 id="3-1-if-else"><a href="#3-1-if-else" class="headerlink" title="3.1 if else"></a>3.1 if else</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;if $logged_in&#125;</div><div class="line">          Welcome,</div><div class="line">      &#123;else&#125;</div><div class="line">          hi, &#123;$name&#125;</div><div class="line">      &#123;/if&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-2-数组遍历"><a href="#3-2-数组遍历" class="headerlink" title="3.2 数组遍历"></a>3.2 数组遍历</h3><p>section 用来循环变量数组</p>
+<p>$custid 是一个数组结构的变量, 下面的例子对$custid进行遍历</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;section name=customer loop=$custid&#125;</div><div class="line">        &lt;p&gt;</div><div class="line">            id: &#123;$custid[customer]&#125;&lt;br/&gt;</div><div class="line">            name: &#123;$name[customer]&#125;&lt;br/&gt;</div><div class="line">            address: &#123;$address[customer]&#125;</div><div class="line">        &lt;/p&gt;</div><div class="line">        &#123;/section&#125;</div></pre></td></tr></table></figure>
+<h2 id="4缓存"><a href="#4缓存" class="headerlink" title="4缓存"></a>4缓存</h2><h3 id="4-1模版缓存"><a href="#4-1模版缓存" class="headerlink" title="4.1模版缓存"></a>4.1模版缓存</h3><ul>
+<li>php中控制缓存</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$smarty-&gt;caching = <span class="keyword">true</span>; <span class="comment">// 开启缓存</span></div><div class="line">$smarty-&gt;cacheLifetime(); <span class="comment">// 可以更精确定义缓存时间</span></div><div class="line">$smarty-&gt;display(<span class="string">'test.tpl'</span>);</div><div class="line"><span class="comment">// $smarty-&gt;display('test.tpl', $my_id); 可以设置一个cacheid，比如每个用户单独缓存</span></div><div class="line"><span class="comment">// $smarty-&gt;assign("title", "smarty 测试", true); 此变量缓存，设置false可以不缓存</span></div></pre></td></tr></table></figure>
+<ul>
+<li>模版中控制是否缓存<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;dynamic&#125;</div><div class="line"></div><div class="line">此区域不缓存 &#123;&apos;0&apos;|date_format:&apos;%D %H:%M:%S&apos;&#125;.</div><div class="line"></div><div class="line">&#123;/dynamic&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>保存一份输出的内容到$cache_dir目录下的文件中（缓存副本）。 在下一次调用display(‘index.tpl’)， 缓存文件会替代渲染模板的过程。</p>
+<p>默认缓存时间是3600秒</p>
+<h3 id="4-2-模版缓存失效检查"><a href="#4-2-模版缓存失效检查" class="headerlink" title="4.2 模版缓存失效检查"></a>4.2 模版缓存失效检查</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$smarty-&gt;setCompileCheck(<span class="keyword">false</span>);</div></pre></td></tr></table></figure>
+<p> $compile_check默认开启， 每个模板文件和配置文件都会在缓存检查的时候执行编译检查。 如果这些文件在缓存生成后被修改，那么缓存会马上重新生成。 这是一个覆盖的选项，所以更好的性能建议把 $compile_check 设置成false。</p>
+<p>设置false后，修改模版后页面不会变，直到超时</p>
+<h3 id="4-3-缓存清除"><a href="#4-3-缓存清除" class="headerlink" title="4.3 缓存清除"></a>4.3 缓存清除</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// 仅删除test.tpl的缓存</div><div class="line">$smarty-&gt;clearCache(&apos;test.tpl&apos;);</div><div class="line"></div><div class="line">// 删除全部缓存</div><div class="line">$smarty-&gt;clearAllCache();</div></pre></td></tr></table></figure>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><h3 id="php代码-test-php"><a href="#php代码-test-php" class="headerlink" title="php代码 test.php"></a>php代码 test.php</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">&lt;?php</div><div class="line">/*</div><div class="line"> * 或者，将库文件的路径写入php.ini配置文件中</div><div class="line">; *nix: &quot;/path1:/path2&quot;</div><div class="line">include_path = &quot;.:/usr/share/php:/usr/local/lib/Smarty/libs/&quot;</div><div class="line"></div><div class="line">; Windows: &quot;\path1;\path2&quot;</div><div class="line">include_path = &quot;.;c:\php\includes;c:\webroot\libs\Smarty\libs\&quot;</div><div class="line"> */</div><div class="line">define(&apos;SMARTY_DIR&apos;, &apos;/usr/local/lib/Smarty/libs/&apos;);</div><div class="line">require_once(SMARTY_DIR . &apos;Smarty.class.php&apos;);</div><div class="line">$smarty = new Smarty;</div><div class="line">/*建议每个应用自定义路径</div><div class="line"> */</div><div class="line">// 获取根路径</div><div class="line">$appContext = $_SERVER[&apos;DOCUMENT_ROOT&apos;] . &apos;/smartyDemo&apos;;</div><div class="line"></div><div class="line">$smarty-&gt;template_dir = $appContext . &quot;/templates/&quot;;</div><div class="line">$smarty-&gt;compile_dir = $appContext . &quot;/templates_c/&quot;;</div><div class="line">$smarty-&gt;config_dir = $appContext . &quot;/configs/&quot;;</div><div class="line">$smarty-&gt;cache_dir = $appContext . &quot;/cache/&quot;;</div><div class="line"></div><div class="line"></div><div class="line">//$smarty-&gt;force_compile = true;</div><div class="line">$smarty-&gt;debugging = true;</div><div class="line">$smarty-&gt;caching = true;</div><div class="line">// 过期时间</div><div class="line">$smarty-&gt;cache_lifetime = 120;</div><div class="line"></div><div class="line">$smarty-&gt;assign(&quot;title&quot;, &quot;smarty 测试&quot;, true);</div><div class="line">$smarty-&gt;assign(&quot;Name&quot;, &quot;Haha&quot;, true);</div><div class="line">$smarty-&gt;assign(&quot;a&quot;, 2, true);</div><div class="line">$smarty-&gt;assign(&quot;b&quot;, 3, true);</div><div class="line"></div><div class="line">// 数组</div><div class="line">$id = array(1001,1002,1003);</div><div class="line">$smarty-&gt;assign(&apos;custid&apos;,$id);</div><div class="line"></div><div class="line">// 让每个缓存的过期时间都可以在display执行前单独设置。</div><div class="line">$smarty-&gt;setCaching(Smarty::CACHING_LIFETIME_SAVED);</div><div class="line"></div><div class="line">// 设置index.tpl的过期时间为5分钟</div><div class="line">$smarty-&gt;setCacheLifetime(3600);</div><div class="line">$smarty-&gt;display(&apos;test.tpl&apos;);</div><div class="line">// 注意：当$caching设置了Smarty::CACHING_LIFETIME_SAVED后，</div><div class="line">// 下面的$cache_lifetime将不会起效。</div><div class="line">// home.tpl已经设置了过期时间为1小时，</div><div class="line">// 所以不会再遵循下面的$cache_lifetime值，</div><div class="line">// test.tpl的过期时间还是1小时。</div><div class="line">$smarty-&gt;setCacheLifetime(60);</div><div class="line">$smarty-&gt;display(&apos;test.tpl&apos;);</div><div class="line">?&gt;</div></pre></td></tr></table></figure>
+<h3 id="模版代码test-tpl"><a href="#模版代码test-tpl" class="headerlink" title="模版代码test.tpl"></a>模版代码test.tpl</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">&#123;config_load file=&quot;test.conf&quot; section=&quot;setup&quot;&#125;</div><div class="line"></div><div class="line">&#123;include file=&quot;header.tpl&quot;&#125;</div><div class="line"></div><div class="line"></div><div class="line">&lt;h1&gt;变量&lt;/h1&gt;</div><div class="line">&lt;hr&gt;</div><div class="line">* 2 The value of &#123;ldelim&#125;$Name&#123;rdelim&#125; is &lt;b&gt;&#123;$Name&#125;&lt;/b&gt;</div><div class="line"></div><div class="line">* 3 可以运算     a*b=   &#123;$a+$b&#125;</div><div class="line"></div><div class="line">* 4 config variabl --&gt;  #desc#</div><div class="line"></div><div class="line">* 5 时间格式化</div><div class="line">&#123;literal&#125; &#123;$smarty.now|date_format:&quot;%Y-%m-%d %H:%M:%S&quot;&#125; &#123;/literal&#125;</div><div class="line">&#123;$smarty.now|date_format:&quot;%Y-%m-%d %H:%M:%S&quot;&#125;</div><div class="line"></div><div class="line">* 6 读取环境变量</div><div class="line">&#123;literal&#125;</div><div class="line">    全局变量&#123;$SCRIPT_NAME&#125;</div><div class="line">    环境变量&#123;$smarty.server.SERVER_NAME&#125;</div><div class="line">&#123;/literal&#125;</div><div class="line"></div><div class="line">$SCRIPT_NAME is &#123;$SCRIPT_NAME&#125;</div><div class="line"></div><div class="line">SERVER_NAME: &#123;$smarty.server.SERVER_NAME&#125;</div><div class="line">&lt;pre&gt;</div><div class="line"></div><div class="line">    &lt;h1&gt;函数&lt;/h1&gt;</div><div class="line">    &lt;h2&gt;加载其他文件&lt;/h2&gt;</div><div class="line">    * 1 &#123;literal&#125;</div><div class="line">        加载配置文件</div><div class="line">        &#123;config_load file=&quot;test.conf&quot; section=&quot;setup&quot;&#125;</div><div class="line">        加载其他模版</div><div class="line">        &#123;include file=&quot;header.tpl&quot;&#125;</div><div class="line">    &#123;/literal&#125;</div><div class="line"></div><div class="line">    &lt;h2&gt;if else&lt;/h2&gt;</div><div class="line">    &#123;literal&#125;</div><div class="line">        &#123;if $logged_in&#125;</div><div class="line">            Welcome,</div><div class="line">        &#123;else&#125;</div><div class="line">            hi, &#123;$name&#125;</div><div class="line">        &#123;/if&#125;</div><div class="line">    &#123;/literal&#125;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;h2&gt;循环&lt;/h2&gt;</div><div class="line">    section 用来循环变量数组</div><div class="line"></div><div class="line">    $custid 是一个数组结构的变量, 下面的例子对$custid进行遍历</div><div class="line"></div><div class="line">    &#123;literal&#125;</div><div class="line">        &#123;section name=customer loop=$custid&#125;</div><div class="line">        &lt;p&gt;</div><div class="line">            id: &#123;$custid[customer]&#125;&lt;br/&gt;</div><div class="line">            name: &#123;$name[customer]&#125;&lt;br/&gt;</div><div class="line">            address: &#123;$address[customer]&#125;</div><div class="line">        &lt;/p&gt;</div><div class="line">        &#123;/section&#125;</div><div class="line">    &#123;/literal&#125;</div><div class="line">    &#123;section name=customer loop=$custid&#125;</div><div class="line">        &lt;p&gt;</div><div class="line">            id: &#123;$custid[customer]&#125;&lt;br/&gt;</div><div class="line">            当前循环元素的索引是</div><div class="line">        &lt;/p&gt;</div><div class="line">    &#123;/section&#125;</div><div class="line">&lt;/pre&gt;</div></pre></td></tr></table></figure>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><h3 id="It-is-not-safe-to-rely-on-the-system’s-timezone-settings"><a href="#It-is-not-safe-to-rely-on-the-system’s-timezone-settings" class="headerlink" title="It is not safe to rely on the system’s timezone settings"></a>It is not safe to rely on the system’s timezone settings</h3><p>smarty 需要获取时间，默认获取的是时间是依赖操作系统的，我这里报了一个错误</p>
+<p>1、在页头使用date_default_timezone_set()设置我的默认时区为北京时间，即 &lt;?php date_default_timezone_set(“PRC”); ?&gt;就可以了。</p>
+<p>2、在php.ini中设置date.timezone的值为PRC，设置好以后的为：date.timezone=PRC</p>
+<p>强烈建议直接修改php.ini配置文件</p>
+<p>PRC 是中国的意思。</p>
+<hr>
+<p><strong>参考文档</strong></p>
+<blockquote>
+<p><a href="http://www.smarty.net/documentation" target="_blank" rel="external">http://www.smarty.net/documentation</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/solr-solrj-query/" rel="next" title="solrj查询">
+                <i class="fa fa-chevron-left"></i> solrj查询
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/spring-websocket/" rel="prev" title="spring-websocket">
+                spring-websocket <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/php-smarty/"
+           data-title="Smarty模版引擎上手" data-url="http://blog.techbeta.me/2015/12/php-smarty/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/img_yangtuo.jpg"
+               alt="Meng" />
+          <p class="site-author-name" itemprop="name">Meng</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">58</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-安装-amp-配置"><span class="nav-number">1.</span> <span class="nav-text">1.安装&配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-安装"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-加载Smarty库"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 加载Smarty库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-设置模版相关的目录"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. 设置模版相关的目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-模版使用"><span class="nav-number">2.</span> <span class="nav-text">2. 模版使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-注释"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-变量"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-配置文件中的变量"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 配置文件中的变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-函数"><span class="nav-number">3.</span> <span class="nav-text">3 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-if-else"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 if else</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-数组遍历"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 数组遍历</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4缓存"><span class="nav-number">4.</span> <span class="nav-text">4缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1模版缓存"><span class="nav-number">4.1.</span> <span class="nav-text">4.1模版缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-模版缓存失效检查"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 模版缓存失效检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-缓存清除"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 缓存清除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完整代码"><span class="nav-number">5.</span> <span class="nav-text">完整代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#php代码-test-php"><span class="nav-number">5.1.</span> <span class="nav-text">php代码 test.php</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模版代码test-tpl"><span class="nav-number">5.2.</span> <span class="nav-text">模版代码test.tpl</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遇到的问题"><span class="nav-number">6.</span> <span class="nav-text">遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#It-is-not-safe-to-rely-on-the-system’s-timezone-settings"><span class="nav-number">6.1.</span> <span class="nav-text">It is not safe to rely on the system’s timezone settings</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Meng</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"momotime"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+<script type="text/javascript" async src="//push.zhanzhang.baidu.com/push.js">
+</script>
+
+
+</body>
+</html>
