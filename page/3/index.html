@@ -275,6 +275,129 @@
             
               
                 
+                <a class="post-title-link" href="/2015/12/spring-viewResolver/" itemprop="url">
+                  spring视图解析器ViewResolver
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-30T19:46:58+08:00" content="2015-12-30">
+              2015-12-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/spring-viewResolver/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/spring-viewResolver/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>今天同事写代码，发现写的freemarker的视图没有找到，但是报的是jstl视图解析器文件路径没有找到的错误。</p>
+<p>然后我们顺势研究了一下机制和源码，发现freemarkerView会判断文件是否存在，而jstlView则不会。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/spring-viewResolver/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/12/AngularJS-http/" itemprop="url">
                   AngularJS http传参方式的设置，json和form data
                 </a>
@@ -1128,132 +1251,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/solr-solrj-query/" itemprop="url">
-                  solrj查询
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-11-07T09:23:38+08:00" content="2015-11-07">
-              2015-11-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/solr/" itemprop="url" rel="index">
-                    <span itemprop="name">solr</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/11/solr-solrj-query/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/solr-solrj-query/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>solrj是solr的java客户端jar包，封装了一些API调用solr服务器。</p>
-<p>jar包包含client，request，response，parmas等类</p>
-<h2 id="0-使用SolrClient查询"><a href="#0-使用SolrClient查询" class="headerlink" title="0. 使用SolrClient查询"></a>0. 使用SolrClient查询</h2><p>SolrClient是一个基础的客户端，提供了基本的查询和更新方法。此类有2个子类，HttpSolrClient 和HttpSolrServer，目前的版本（5.3.1）已不推荐使用HttpSolrServer了。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">HttpSolrClient client = <span class="keyword">new</span> HttpSolrClient(solrServerUrl);</div><div class="line">client.setConnectionTimeout(CONNECTION_TIMEOUT); <span class="comment">// 建立连接的超时时间</span></div><div class="line">client.setParser(<span class="keyword">new</span> XMLResponseParser());</div><div class="line">client.setSoTimeout(QUERY_TIMEOUT); <span class="comment">// socket read timeout</span></div><div class="line">client.setDefaultMaxConnectionsPerHost(MAX_CONNECTIONS_PER_HOST);</div><div class="line">client.setMaxTotalConnections(MAX_CONNECTIONS);</div><div class="line">client.setFollowRedirects(<span class="keyword">false</span>); <span class="comment">// defaults to false</span></div><div class="line"><span class="comment">// 开启gzip压缩</span></div><div class="line">client.setAllowCompression(<span class="keyword">true</span>);</div><div class="line">client.setRequestWriter(<span class="keyword">new</span> BinaryRequestWriter());</div></pre></td></tr></table></figure>
-<h2 id="1使用SolrQuery封装查询参数"><a href="#1使用SolrQuery封装查询参数" class="headerlink" title="1使用SolrQuery封装查询参数"></a>1使用SolrQuery封装查询参数</h2>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/11/solr-solrj-query/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1299,7 +1296,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">58</span>
+              <span class="site-state-item-count">59</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1316,7 +1313,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

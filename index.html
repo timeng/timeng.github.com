@@ -275,6 +275,140 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/java-mybatis/" itemprop="url">
+                  MyBatis批量更新性能测试
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-08T11:23:20+08:00" content="2016-09-08">
+              2016-09-08
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/java-mybatis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/java-mybatis/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文使用JDK1.8，Tomcat7，dbcp连接池，MyBatis</p>
+</blockquote>
+<p>众所周知，MyBatis中批量操作数据库是需要在sqlMap中写foreach的，像下面这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;update id=&quot;batchUpdate&quot; parameterType=&quot;java.util.List&quot;&gt;</div><div class="line">    update test_user</div><div class="line">      set remark=‘abc’</div><div class="line">    where</div><div class="line">    &lt;foreach collection=&quot;list&quot; separator=&quot;or&quot; item=&quot;i&quot; index=&quot;index&quot; &gt;</div><div class="line">        id=#&#123;i.id&#125;</div><div class="line">    &lt;/foreach&gt;</div><div class="line">&lt;/update&gt;</div></pre></td></tr></table></figure></p>
+<p>在代码评审过程中，大家对foreach的性能提出了质疑，然后笔者进行了测试。</p>
+<h2 id="0-测试目标"><a href="#0-测试目标" class="headerlink" title="0.测试目标"></a>0.测试目标</h2><p>测试三种场景：</p>
+<ul>
+<li>单线程，使用MyBatis的foreach，不开启事务拦截</li>
+<li>单线程，使用MyBatis的foreach，开启事务拦截</li>
+<li>多线程，使用java代码for循环提交到线程池</li>
+</ul>
+<p>主要关注执行耗时</p>
+<h2 id="1-使用foreach，不开启事务拦截，批量插入1000条数据"><a href="#1-使用foreach，不开启事务拦截，批量插入1000条数据" class="headerlink" title="1.使用foreach，不开启事务拦截，批量插入1000条数据"></a>1.使用foreach，不开启事务拦截，批量插入1000条数据</h2><h3 id="1-1-代码"><a href="#1-1-代码" class="headerlink" title="1.1 代码"></a>1.1 代码</h3><ul>
+<li><p>sqlMap</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;insert id=&quot;batchAdd&quot; parameterType=&quot;java.util.List&quot;&gt;</div><div class="line">    &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; index=&quot;index&quot; open=&quot;&quot; close=&quot;&quot; separator=&quot;;&quot;&gt;</div><div class="line">        INSERT INTO test_user (id,username,password,remark)</div><div class="line">    VALUES (#&#123;item.id&#125;,#&#123;item.username&#125;,#&#123;item.password&#125;,#&#123;item.remark&#125;)</div><div class="line">    &lt;/foreach&gt;</div><div class="line">&lt;/insert&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Java代码，生成1000条数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"batchAdd"</span>, method = RequestMethod.GET)</div><div class="line"><span class="meta">@ResponseBody</span></div><div class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">batchAdd</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">long</span> start = System.currentTimeMillis();</div><div class="line">    List&lt;User&gt; list = <span class="keyword">new</span> ArrayList&lt;User&gt;();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">1000</span>; i++) &#123;</div><div class="line">        User user = <span class="keyword">new</span> User();</div><div class="line">        user.setId(<span class="keyword">null</span>);</div><div class="line">        user.setUsername(String.valueOf(i));</div><div class="line">        user.setPassword(String.valueOf(i));</div><div class="line">        list.add(user);</div><div class="line">    &#125;</div><div class="line">    userService.batchAdd(list);</div><div class="line">    <span class="keyword">long</span> end = System.currentTimeMillis();</div><div class="line">    String result = <span class="string">"foreache耗时："</span> + (end - start) + <span class="string">"ms"</span>;</div><div class="line">    System.out.println(result);</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="耗时"><a href="#耗时" class="headerlink" title="耗时"></a>耗时</h3><p>43444ms</p>
+<h2 id="2-使用foreach，开始事务拦截"><a href="#2-使用foreach，开始事务拦截" class="headerlink" title="2. 使用foreach，开始事务拦截"></a>2. 使用foreach，开始事务拦截</h2><p>使用1中的代码，不同的是开启事务拦截，拦截<code>add()</code>方法<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">tx:advice</span> <span class="attr">id</span>=<span class="string">"txAdvice"</span> <span class="attr">transaction-manager</span>=<span class="string">"txManager"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">tx:attributes</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">"save*"</span> <span class="attr">propagation</span>=<span class="string">"REQUIRED"</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">"add*"</span> <span class="attr">propagation</span>=<span class="string">"REQUIRED"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">tx:attributes</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">tx:advice</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h2 id="执行耗时"><a href="#执行耗时" class="headerlink" title="执行耗时"></a>执行耗时</h2><p>1001ms</p>
+<h2 id="3-在java代码中进行循环，多线程提交"><a href="#3-在java代码中进行循环，多线程提交" class="headerlink" title="3. 在java代码中进行循环，多线程提交"></a>3. 在java代码中进行循环，多线程提交</h2><h3 id="sqlMap"><a href="#sqlMap" class="headerlink" title="sqlMap"></a>sqlMap</h3><p><insert id="addUser" parametertype="me.techbeta.test.mybatis.entity.User" flushcache="true"><br>    INSERT INTO test_user (id,username,password,remark)<br>VALUES (#{id},#{username},#{password},#{remark})<br></insert></p>
+<h3 id="java代码"><a href="#java代码" class="headerlink" title="java代码"></a>java代码</h3><p>每生成一条数据立即提交到线程池<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">@RequestMapping(value = &quot;forAdd&quot;, method = RequestMethod.GET)</div><div class="line">@ResponseBody</div><div class="line">public Object forAdd() throws Exception &#123;</div><div class="line">    ThreadPoolExecutor pool = new ThreadPoolExecutor(300, Integer.MAX_VALUE,</div><div class="line">            10000L, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;Runnable&gt;(10000));</div><div class="line">    List&lt;Future&gt; flist = new ArrayList&lt;Future&gt;();</div><div class="line">    long start = System.currentTimeMillis();</div><div class="line"></div><div class="line">    for (int i = 1; i &lt; 1000; i++) &#123;</div><div class="line">        User user = new User();</div><div class="line">        user.setId(null);</div><div class="line">        user.setUsername(String.valueOf(i));</div><div class="line">        user.setPassword(String.valueOf(i));</div><div class="line">        Future future = pool.submit(new AddUserTask(userService, user));</div><div class="line">        flist.add(future);</div><div class="line">    &#125;</div><div class="line">    for (Future future : flist) &#123;</div><div class="line">        future.get();</div><div class="line">    &#125;</div><div class="line">    long end = System.currentTimeMillis();</div><div class="line">    String result = &quot;java中for循环耗时： &quot; + (end - start) + &quot;ms&quot;;</div><div class="line">    System.out.println(result);</div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="耗时-1"><a href="#耗时-1" class="headerlink" title="耗时"></a>耗时</h3><p>2404ms</p>
+<p>同时，观察数据库连接数，发现了<strong>大量连接</strong></p>
+<h2 id="4-结论"><a href="#4-结论" class="headerlink" title="4.结论"></a>4.结论</h2><p>使用MyBatis foreach，开启事务。一次性提交，执行最快</p>
+<p>使用多线程提交，速度比较快，但是会消耗消耗较多的服务器资源和连接</p>
+<p>使用MyBatis foreach，不开启事务。相当于是单线程把sql顺序发动到数据库，执行时间最长。</p>
+<p><strong>建议</strong></p>
+<blockquote>
+<p>建议使用事务进行提交<br>如果数据量比较大，建议把数据处理成多组，然后每组使用事务进提交，防止事务过大</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/mysql-test-convert/" itemprop="url">
                   mysql convert函数性能测试
                 </a>
@@ -1161,128 +1295,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/02/ping-traceroute/" itemprop="url">
-                  ping和traceroute
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-02-23T10:41:35+08:00" content="2016-02-23">
-              2016-02-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/network/" itemprop="url" rel="index">
-                    <span itemprop="name">network</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/02/ping-traceroute/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/02/ping-traceroute/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="1-ping"><a href="#1-ping" class="headerlink" title="1. ping"></a>1. ping</h2><p>通常我们是用ping命令来检查网络是否联通<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/02/ping-traceroute/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1328,7 +1340,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">58</span>
+              <span class="site-state-item-count">59</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1345,7 +1357,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

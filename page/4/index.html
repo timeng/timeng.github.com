@@ -275,6 +275,132 @@
             
               
                 
+                <a class="post-title-link" href="/2015/11/solr-solrj-query/" itemprop="url">
+                  solrj查询
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-11-07T09:23:38+08:00" content="2015-11-07">
+              2015-11-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/solr/" itemprop="url" rel="index">
+                    <span itemprop="name">solr</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/solr-solrj-query/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/solr-solrj-query/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>solrj是solr的java客户端jar包，封装了一些API调用solr服务器。</p>
+<p>jar包包含client，request，response，parmas等类</p>
+<h2 id="0-使用SolrClient查询"><a href="#0-使用SolrClient查询" class="headerlink" title="0. 使用SolrClient查询"></a>0. 使用SolrClient查询</h2><p>SolrClient是一个基础的客户端，提供了基本的查询和更新方法。此类有2个子类，HttpSolrClient 和HttpSolrServer，目前的版本（5.3.1）已不推荐使用HttpSolrServer了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">HttpSolrClient client = <span class="keyword">new</span> HttpSolrClient(solrServerUrl);</div><div class="line">client.setConnectionTimeout(CONNECTION_TIMEOUT); <span class="comment">// 建立连接的超时时间</span></div><div class="line">client.setParser(<span class="keyword">new</span> XMLResponseParser());</div><div class="line">client.setSoTimeout(QUERY_TIMEOUT); <span class="comment">// socket read timeout</span></div><div class="line">client.setDefaultMaxConnectionsPerHost(MAX_CONNECTIONS_PER_HOST);</div><div class="line">client.setMaxTotalConnections(MAX_CONNECTIONS);</div><div class="line">client.setFollowRedirects(<span class="keyword">false</span>); <span class="comment">// defaults to false</span></div><div class="line"><span class="comment">// 开启gzip压缩</span></div><div class="line">client.setAllowCompression(<span class="keyword">true</span>);</div><div class="line">client.setRequestWriter(<span class="keyword">new</span> BinaryRequestWriter());</div></pre></td></tr></table></figure>
+<h2 id="1使用SolrQuery封装查询参数"><a href="#1使用SolrQuery封装查询参数" class="headerlink" title="1使用SolrQuery封装查询参数"></a>1使用SolrQuery封装查询参数</h2>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/11/solr-solrj-query/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/chrome-extensions/" itemprop="url">
                   Chrome扩展
                 </a>
@@ -1131,131 +1257,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/10/shell-debug/" itemprop="url">
-                  shell  bashdb调试
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-09T18:42:33+08:00" content="2015-10-09">
-              2015-10-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/shell-debug/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/shell-debug/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>shell作为linux上的脚本，语法相对其他编程语言要简单，没有ide支持，想要断点调试是比较困难的。shell -x可以简单的跟踪代码执行，而bashdb的调试功能非常丰富和强大</p>
-<h2 id="1-shell调试"><a href="#1-shell调试" class="headerlink" title="1. shell调试"></a>1. shell调试</h2><p>1.1 shell自带-x和-n 参数</p>
-<h3 id="1-1-x-参数表示打印出trace信息"><a href="#1-1-x-参数表示打印出trace信息" class="headerlink" title="1.1 -x 参数表示打印出trace信息"></a>1.1 -x 参数表示打印出trace信息</h3><p>带<code>+</code>号的表示是代码行，不带的表示是echo输出</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ bash -x a.sh</div><div class="line">+ a=&apos;hello world&apos;</div><div class="line">+ echo &apos;A is:&apos;</div><div class="line">A is:</div><div class="line">+ echo hello world</div><div class="line">hello world</div></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/10/shell-debug/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1301,7 +1302,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">58</span>
+              <span class="site-state-item-count">59</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1318,7 +1319,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
