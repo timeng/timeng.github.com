@@ -275,6 +275,144 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/hive-install/" itemprop="url">
+                  centos下hive安装及配置
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-28T19:49:20+08:00" content="2016-10-28">
+              2016-10-28
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/hive-install/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/hive-install/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文基于hive2.1.0版本</p>
+<h2 id="hive安装"><a href="#hive安装" class="headerlink" title="hive安装"></a>hive安装</h2><h3 id="1-环境依赖"><a href="#1-环境依赖" class="headerlink" title="1. 环境依赖"></a>1. 环境依赖</h3></blockquote>
+<p>Hadoop<br>Mysql（可选，我选择的是mysql数据库）</p>
+<h3 id="2-下载安装hive"><a href="#2-下载安装hive" class="headerlink" title="2. 下载安装hive"></a>2. 下载安装hive</h3><pre><code>下载地址：http://www.apache.org/dyn/closer.cgi/hive/
+
+本文写作时最新稳定版是`2.1.0`，我使用的此版本
+</code></pre><ul>
+<li><p><em>解压</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">tar -zxvf apache-hive-2.1.0-bin.tar.gz</div><div class="line"></div><div class="line">mv  apache-hive-2.1.0-bin hive</div></pre></td></tr></table></figure>
+</li>
+<li><p><em>配置环境变量</em></p>
+</li>
+</ul>
+<p>root用户编辑<code>/etc/profile</code>文件(非root用户，编辑~/.bash_profile)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">$ vi /etc/profile</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">export HIVE_HOME=/home/techbeta/hive</div><div class="line"></div><div class="line">export PATH=$HIVE_HOME/bin: $PATH</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">$  source /etc/profile</div></pre></td></tr></table></figure>
+<h3 id="3-在Mysql中新建hive用户"><a href="#3-在Mysql中新建hive用户" class="headerlink" title="3. 在Mysql中新建hive用户"></a>3. 在Mysql中新建hive用户</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> hive;</div><div class="line"></div><div class="line"><span class="keyword">GRANT</span> ALL <span class="keyword">ON</span> hive.* <span class="keyword">TO</span> hive@’%’ <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> ‘<span class="number">123456</span>′;</div><div class="line"></div><div class="line"><span class="keyword">flush</span> <span class="keyword">privileges</span>;</div></pre></td></tr></table></figure>
+<h3 id="4-配置hive-site-xml"><a href="#4-配置hive-site-xml" class="headerlink" title="4. 配置hive-site.xml"></a>4. 配置hive-site.xml</h3><p><code>$ cd $HIVE_HOME/conf/</code></p>
+<p>新建hive-site.xml, 里面是以下内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"></div><div class="line">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.metastore.warehouse.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/home/techbeta/warehouse/<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Hive在HDFS上的根目录<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionURL<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>jdbc:mysql://192.168.56.101:3306/hive?serverTimezone=UTC&amp;amp;createDatabaseIfNotExist=true&amp;amp;ssl=false&amp;amp;zeroDateTimeBehavior=convertToNull<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Hive元数据库的连接串，红色为数据库名<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionDriverName<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>com.mysql.jdbc.Driver<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Hive元数据库JDBC驱动,mysql不能使用6.0+版本<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionUserName<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hive<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Hive元数据库用户名<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionPassword<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Hive元数据库密码<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>datanucleus.autoCreateTables<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>不存在时，自动创建Hive元数据表<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>datanucleus.autoCreateColumns<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>不存在时，自动创建Hive元数据列<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>datanucleus.fixedDatastore<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>false<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span>  </div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>datanucleus.autoStartMechanism<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>SchemaTable<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line"></div><div class="line">   <span class="comment">&lt;!--</span></div><div class="line"></div><div class="line">   &lt;property&gt;</div><div class="line"></div><div class="line">    &lt;name&gt;hive.server2.thrift.port&lt;/name&gt;</div><div class="line"></div><div class="line">    &lt;value&gt;10000&lt;/value&gt;</div><div class="line"></div><div class="line">  &lt;/property&gt;</div><div class="line"></div><div class="line">  &lt;property&gt;</div><div class="line"></div><div class="line">    &lt;name&gt;hive.server2.thrift.bind.host&lt;/name&gt;</div><div class="line"></div><div class="line">    &lt;value&gt;192.168.56.102&lt;/value&gt;</div><div class="line"></div><div class="line">  &lt;/property&gt;</div><div class="line"></div><div class="line"> 设置hive端口和ip，默认端口10000，ip是localhost --&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="5-启动hive2"><a href="#5-启动hive2" class="headerlink" title="5 启动hive2"></a>5 启动hive2</h3><ul>
+<li>启动hive2<br><code>hive --service hiveserver2</code> 或者<code>hiveserver2</code></li>
+</ul>
+<ul>
+<li>连接到hive2</li>
+</ul>
+<p>使用beeline这个命令来连接到hive</p>
+<p>如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">$ beeline -u jdbc:hive2://localhost:10000</div></pre></td></tr></table></figure>
+<p>默认只有default数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">beenline &gt;show databases;</div><div class="line"></div><div class="line">beenline &gt; show databases;</div></pre></td></tr></table></figure>
+<p>第一次执行，Hive需要在元数据库中建立相关的表，因此会稍微感觉慢一些。</p>
+<h3 id="日志文件"><a href="#日志文件" class="headerlink" title="日志文件"></a>日志文件</h3><p>日志默认存放在<code>/tmp/${user.name}/hive.log</code>中</p>
+<p>此路径是在<code>$HIVE_HOME/conf/hive-log4j.properties</code>配置文件中<code>property.hive.log.dir = ${sys:java.io.tmpdir}/${sys:user.name}</code>，可以自行修改此文件</p>
+<hr>
+<p>参考文档：<br><a href="https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-InstallingHivefromaStableRelease" target="_blank" rel="external">https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-InstallingHivefromaStableRelease</a><br><a href="http://lxw1234.com/archives/2015/06/269.htm" target="_blank" rel="external">http://lxw1234.com/archives/2015/06/269.htm</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/java-mybatis/" itemprop="url">
                   MyBatis批量更新性能测试
                 </a>
@@ -1158,143 +1296,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/04/hack-web/" itemprop="url">
-                  常见web安全漏洞
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-04-27T19:50:43+08:00" content="2016-04-27">
-              2016-04-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/security/" itemprop="url" rel="index">
-                    <span itemprop="name">security</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/04/hack-web/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/hack-web/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>这几天Strtus2的安全漏洞掀起了热烈讨论。随着网络越来越深入生活，以及新的互联网产品不断推出，安全形势更加严峻了。</p>
-<p>我所在的企业，自从成立了安全部门之后，我也不断的收到了若干安全漏洞报告。</p>
-<p>所接触到的漏洞主要有下面几种：</p>
-<ol>
-<li>XSS 跨站脚本攻击</li>
-<li>CSRF 跨站请求伪造</li>
-<li>SQL注入</li>
-<li>权限绕过</li>
-</ol>
-<h2 id="1-XSS"><a href="#1-XSS" class="headerlink" title="1. XSS"></a>1. XSS</h2><blockquote>
-<p>本章节代码在Chrome50下测试</p>
-</blockquote>
-<p>很普遍的漏洞，危害非常大。</p>
-<p>XSS分两种，反射型xss和存储型xss。两者不同支出就在于是否会持久化到服务器。</p>
-<p>但是不管哪种，本质上是用户在页面动态文本的地方输入了js，并且被浏览器解析执行。</p>
-<p>js可以获取cookie等敏感数据。因为http无状态，身份识别通过cookie来传递。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/04/hack-web/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1340,7 +1341,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -275,6 +275,136 @@
             
               
                 
+                <a class="post-title-link" href="/2014/06/python-lambda/" itemprop="url">
+                  python的lambda表达式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-06-07T23:30:46+08:00" content="2014-06-07">
+              2014-06-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/06/python-lambda/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/06/python-lambda/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>lambda表达式是一种快速创建函数的方式</p>
+<h2 id="1-lambda表达式的语法"><a href="#1-lambda表达式的语法" class="headerlink" title="1. lambda表达式的语法"></a>1. lambda表达式的语法</h2><pre><code>lambda_expr  ::=  &quot;lambda&quot; [parameter_list]: expression
+</code></pre><p><code>lambda 参数列表 : 表达式</code></p>
+<h2 id="2-赋值给对象，以创建一个函数"><a href="#2-赋值给对象，以创建一个函数" class="headerlink" title="2. 赋值给对象，以创建一个函数"></a>2. 赋值给对象，以创建一个函数</h2><p>下面的代码创建了一个函数对象<code>a</code>，你可以像调用普通函数一样去调用<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">i = <span class="number">1</span></div><div class="line">j = <span class="number">2</span></div><div class="line">a = <span class="keyword">lambda</span> x, y: x + y</div><div class="line">print(a(i, j))</div></pre></td></tr></table></figure></p>
+<p>等同于下面的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def a(x, y):</div><div class="line">    return x + y</div></pre></td></tr></table></figure></p>
+<h2 id="3-需要注意的地方"><a href="#3-需要注意的地方" class="headerlink" title="3. 需要注意的地方"></a>3. 需要注意的地方</h2><ol>
+<li>使用内建函数，性能要好于lambda，所以不要滥用lambda</li>
+<li>对于只调用一次的函数，写成lambda更简单，因为无需使用def定义一个新的函数，lambda调用结束就会被销毁</li>
+<li>lambda已经隐含了return，它是一个表达式，而不是语句</li>
+<li>lambda只能写单行表达式</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2014/06/python-base64/" itemprop="url">
                   Python2.x VS 3.x 之base64
                 </a>
@@ -1125,128 +1255,6 @@ or
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2014/03/java8-type-inference/" itemprop="url">
-                  java8新特性-提升了泛型的类型推断
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2014-03-29T23:20:42+08:00" content="2014-03-29">
-              2014-03-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2014/03/java8-type-inference/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/03/java8-type-inference/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="1-jdk1-7之前的泛型"><a href="#1-jdk1-7之前的泛型" class="headerlink" title="1.jdk1.7之前的泛型"></a>1.jdk1.7之前的泛型</h2><p>泛型是在jdk1.5中加入，在jdk1.7之前，java的泛型写法，是经常被人诟病的，诸如<code>List&lt;String&gt; list = new ArrayList&lt;String&gt;();</code>这段代码，很多开发人员都会问，为什么我声明时指明了类型，在创建时还要我再次指明类型？</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2014/03/java8-type-inference/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1292,7 +1300,7 @@ or
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
